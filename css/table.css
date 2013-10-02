@@ -1,0 +1,42 @@
+@charset "utf-8";
+/* CSS Document */
+
+table {
+	border-collapse:collapse;
+	margin-bottom:20px;
+	font: 14px/22px "Arial",Arial,Helvetica,sans-serif;
+	border: medium solid #039;
+	min-width:800px;
+	margin-top:10px;
+}
+table thead {
+	border-bottom: thin solid #FFCC33;
+	border-top: thin solid  #FFCC33;
+	font-weight: bold;
+	line-height: 32px;
+	
+}
+table th { 
+	border:none; 
+	background:#10A5C5; 
+	color:#fff; 
+	padding:3px 10px; 
+	text-align: center; 
+	margin-bottom: 15px;
+}
+table  td {
+	border:1px solid #FCD09E;
+	padding:3px 10px;
+	color: #006699;
+	vertical-align: top;
+	text-align: center;
+}
+table tbody tr:nth-child(odd) {
+	background: none repeat scroll 0 0 #ECF4FA;
+}
+table tbody tr:nth-child(even) {
+	background: none repeat scroll 0 0 #F7F7F7;
+}
+table td a { color:#505150; text-decoration: underline; }
+
+

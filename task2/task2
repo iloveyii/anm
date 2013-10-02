@@ -1,0 +1,99 @@
+#!/usr/bin/perl 
+# Student: Hazrat Ali, Acronym: haae09, Course: ANM ET2439
+# Perl Scrip v5.14.2
+# SYNTAX: perl task2 [savedevice|removedevice <IP> <port> <community> [If1 If2 … IfN]]
+use warnings; 
+use strict;
+# include the configuration file with DB credentials
+require "task2.conf";
+our ($HOST, $DATABASE, $USERNAME, $PASSWD, $DEVICE_TABLE, $LOG_TABLE);
+
+# create object
+my $task2 = new SnmpTraffic();
+$task2->connectDB($HOST, $DATABASE, $USERNAME, $PASSWD, $DEVICE_TABLE, $LOG_TABLE);
+$task2->run();
+ 
+#########  Class 
+package SnmpTraffic;
+
+use POSIX; 
+use DBI;
+use Date::Parse;
+use logtable;
+use warnings;
+use strict;
+my ($dbh); 
+my ($DEVICETABLE, $LOGTABLE);
+
+# constructor
+sub new {
+    my ($class) = shift;
+    my $self = {
+		_argc => shift,
+    };
+    bless $self, $class;
+    return $self;
+}
+
+# connect db
+sub connectDB {
+	my ($self, $HOST, $DATABASE, $USERNAME, $PASSWD, $DEVICE_T, $LOG_T) = @_;
+	# print "DATABASE= $DATABASE, HOST=$HOST \n"; exit;
+	$DEVICETABLE = $DEVICE_T;  $LOGTABLE = $LOG_T;
+	my $db = "dbi:mysql:" . $DATABASE . ":" . $HOST;
+	print "db : $db \n";
+	$dbh = DBI->connect($db,$USERNAME,$PASSWD)  or die "Connection Error:$DBI::errstr\n";
+	printf "Connected to MySQL successfully \n";
+}
+
+# Probe devices found in DEVICES table and save data to log file TRAFFIC
+sub run {
+	my ($self) = @_;
+	print "Check if DEVICES table not exists then create \n";
+	$self->createTableIfNotExist($DEVICETABLE);
+	my $sql = "SELECT * FROM $DEVICETABLE;";
+	my $sth = $dbh->prepare($sql);
+	$sth->execute  or die "SQL Error: $DBI::errstr\n";
+	while (my @data = $sth->fetchrow_array()) {
+		my ($id,$ip,$port,$community,$interf) = @data;
+		print "\n\n########Got device IP from Database = $ip \n";
+		# print "rows: ($id,$ip,$port,$community,$interf) \n";
+		my @tmpInterfaces = (); my @interfaces =();
+		@tmpInterfaces = split(/ /, $interf); 
+		foreach my $int(@tmpInterfaces) { #remove the leading if 
+			if($int eq 'all') {
+				push(@interfaces, $int);
+			} else {
+				# push(@interfaces, substr($int, 2));
+				push(@interfaces, $int); # teacher comment, 'IF' is not required!
+			}
+		}
+		
+		print "Sending Device IP= $ip, interfaces etc to LogTable object \n\n";
+		# Make an object of LogTable class, it will the rest of the work
+		my $updateLogTable = new LogTable();
+		$updateLogTable->runOnce($LOG_TABLE, $dbh,$ip, $port, $community, $id,\@interfaces);
+    }	
+	print "Bye !!!\n";
+}
+
+# create DEVICES table if not exist
+sub createTableIfNotExist {
+	my ($self, $DEVICETABLE) = @_;
+	my $sql = "
+		CREATE TABLE IF NOT EXISTS `$DEVICETABLE` (
+		  `id` int(11) NOT NULL AUTO_INCREMENT,
+		  `IP` varchar(20) NOT NULL,
+		  `PORT` int(11) NOT NULL,
+		  `COMMUNITY` tinytext NOT NULL,
+		  `INTERFACES` tinytext NOT NULL,
+		  PRIMARY KEY (`id`),
+		  UNIQUE KEY `IP_UNIQUE` (`IP`)
+		) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=latin1;
+	";
+
+	my $sth = $dbh->prepare($sql);
+	$sth->execute  or die "SQL Error: $DBI::errstr\n";
+}
+1;
+
