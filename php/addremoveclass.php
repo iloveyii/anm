@@ -9,8 +9,8 @@
 	 * 
 	 * @author Hazrat Ali <ali.sweden19@yahoo.com>
 	 */
-	 // 
-	class AddRemoveDevice extends mainClass {
+	 //   
+	 class AddRemoveDevice extends mainClass {
 	
 		/** 
 	     * Performs initializations upon class instantiation 
@@ -39,7 +39,7 @@
 		 */
 		public function showTable($return = FALSE) {
 			if(! $this->isAuthenticated()) { return FALSE;}
-			$strHtml = '';
+			$strHtml = ''; // earlier declaration needed for some php versions
 			$stmt = self::$dBh->prepare($this->sql); 
 			$stmt->execute();
 			$strHtml = '<table style="border:2px solid gray; margin-top:0;">';
