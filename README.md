@@ -9,7 +9,7 @@ This is a php based web application which is used to monitor different network d
 
 INSTALLATIONS
 ---------------
-  * Clone the repository `git clone git@bitbucket.org:iloveyii/anm.git`.
+  * Clone the repository `git clone git@github.com:iloveyii/anm.git`.
   * Create a database (manually for now) and adjust the database credentials in the `conf.php` file as per your environment.
   * Import the database dump file `mysql -uroot -p dbname < haae09_20130509.sql`.
   * Point web browser to index.php or Create a virtual host using [vh](https://github.com/iloveyii/vh) `vh new anm -p ~/anm/index.php`
