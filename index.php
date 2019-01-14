@@ -59,8 +59,8 @@
         <?php } else { ?>
             <input name="login" type="hidden" value="login" />
             <label>Email</label> 
-            <input type="text" value="" size="30" placeholder="Email" name="email" id="user_email" class="form_inputs">
-            <input type="password" value="" size="30" placeholder="Password" name="password" id="user_email" class="form_inputs">
+            <input type="text" value="admin" size="30" placeholder="Email" name="email" id="user_email" class="form_inputs">
+            <input type="password" value="admin" size="30" placeholder="Password" name="password" id="user_email" class="form_inputs">
             <a class="button button_gray button_lock" href="javascript:{}" onclick="document.getElementById('login_form').submit(); return false;">Login</a> 
             <a class="button button_orange" href="register.php" target="_new">Sign Up</a>
         <?php }?>
